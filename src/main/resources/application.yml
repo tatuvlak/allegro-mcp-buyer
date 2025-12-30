@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: allegro-mcp
+  main:
+    web-application-type: reactive
+  ai:
+    mcp:
+      server:
+        name: allegro-mcp
+        version: 0.1.0
+        type: ASYNC
+        sse-message-endpoint: /mcp/message
+
+server:
+  port: 8080
+
+allegro:
+  api:
+    base-url: https://api.allegro.pl
+    auth-url: https://allegro.pl/auth/oauth
+    sandbox-base-url: https://api.allegro.pl.allegrosandbox.pl
+    sandbox-auth-url: https://allegro.pl.allegrosandbox.pl/auth/oauth
+  sandbox: false
+  client-id: ${ALLEGRO_CLIENT_ID:}
+  client-secret: ${ALLEGRO_CLIENT_SECRET:}
+
+logging:
+  level:
+    com.bilski.allegromcp: DEBUG
+    org.springframework.ai.mcp: DEBUG
