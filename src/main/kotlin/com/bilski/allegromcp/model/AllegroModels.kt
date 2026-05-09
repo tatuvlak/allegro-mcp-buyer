@@ -2,6 +2,7 @@ package com.bilski.allegromcp.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.Instant
 
 // OAuth Models
 data class DeviceCodeResponse(
@@ -20,6 +21,40 @@ data class TokenResponse(
     @JsonProperty("expires_in") val expiresIn: Int,
     @JsonProperty("scope") val scope: String?,
     @JsonProperty("jti") val jti: String?
+)
+
+data class StoredToken(
+    val accessToken: String,
+    val tokenType: String,
+    val refreshToken: String?,
+    val expiresIn: Int,
+    val scope: String?,
+    val jti: String?,
+    val issuedAtEpochSeconds: Long
+) {
+    fun toTokenResponse(): TokenResponse = TokenResponse(
+        accessToken = accessToken,
+        tokenType = tokenType,
+        refreshToken = refreshToken,
+        expiresIn = expiresIn,
+        scope = scope,
+        jti = jti
+    )
+
+    fun isExpired(refreshBeforeExpirySeconds: Long = 0): Boolean {
+        val expiresAt = issuedAtEpochSeconds + expiresIn
+        return Instant.now().epochSecond >= (expiresAt - refreshBeforeExpirySeconds)
+    }
+}
+
+fun TokenResponse.toStoredToken(issuedAtEpochSeconds: Long = Instant.now().epochSecond): StoredToken = StoredToken(
+    accessToken = accessToken,
+    tokenType = tokenType,
+    refreshToken = refreshToken,
+    expiresIn = expiresIn,
+    scope = scope,
+    jti = jti,
+    issuedAtEpochSeconds = issuedAtEpochSeconds
 )
 
 // Order Models
@@ -158,6 +193,27 @@ data class SellingMode(
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Image(
     val url: String?
+)
+
+// Product Search
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ProductSearchResponse(
+    val items: ProductSearchItems?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ProductSearchItems(
+    val promoted: List<ProductOffer>?,
+    val regular: List<ProductOffer>?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ProductOffer(
+    val id: String?,
+    val name: String?,
+    val sellingMode: SellingMode?,
+    val seller: Seller?,
+    val images: List<Image>?
 )
 
 // User Info

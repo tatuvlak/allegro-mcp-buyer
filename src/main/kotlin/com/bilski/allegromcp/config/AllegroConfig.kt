@@ -11,13 +11,21 @@ data class AllegroProperties(
     val api: ApiProperties = ApiProperties(),
     val sandbox: Boolean = false,
     val clientId: String = "",
-    val clientSecret: String = ""
+    val clientSecret: String = "",
+    val clientIdFile: String = "",
+    val clientSecretFile: String = "",
+    val auth: AuthProperties = AuthProperties()
 ) {
     data class ApiProperties(
         val baseUrl: String = "https://api.allegro.pl",
         val authUrl: String = "https://allegro.pl/auth/oauth",
         val sandboxBaseUrl: String = "https://api.allegro.pl.allegrosandbox.pl",
         val sandboxAuthUrl: String = "https://allegro.pl.allegrosandbox.pl/auth/oauth"
+    )
+
+    data class AuthProperties(
+        val tokenFile: String = "",
+        val refreshBeforeExpirySeconds: Long = 60
     )
 
     fun getActiveBaseUrl(): String = if (sandbox) api.sandboxBaseUrl else api.baseUrl

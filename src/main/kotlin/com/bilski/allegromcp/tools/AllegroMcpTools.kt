@@ -71,7 +71,7 @@ class AllegroMcpTools(
     )
     fun checkAuthStatus(): String {
         return if (authService.hasValidToken()) {
-            "Authenticated with Allegro. Ready to make API calls."
+            "Authenticated with Allegro. Ready to make API calls. Token persistence file: ${authService.getTokenFileLocation()}"
         } else {
             "Not authenticated. Please use 'allegro_authenticate' to start the authentication flow."
         }
@@ -246,6 +246,47 @@ class AllegroMcpTools(
             }
         } catch (e: Exception) {
             "Failed to get bought items: ${e.message}"
+        }
+    }
+
+    @Tool(
+        name = "allegro_search_products",
+        description = "Search Allegro products by phrase and return matching offers."
+    )
+    fun searchProducts(
+        @ToolParam(description = "Search phrase (e.g. 'laptop dell')") phrase: String,
+        @ToolParam(description = "Maximum number of offers to return (default: 10)") limit: Int = 10,
+        @ToolParam(description = "Offset for pagination (default: 0)") offset: Int = 0
+    ): String = runBlocking {
+        try {
+            val normalizedPhrase = phrase.trim()
+            if (normalizedPhrase.isEmpty()) {
+                return@runBlocking "Search phrase cannot be empty."
+            }
+
+            val searchResults = apiService.searchProducts(normalizedPhrase, limit, offset)
+            val promoted = searchResults.items?.promoted.orEmpty()
+            val regular = searchResults.items?.regular.orEmpty()
+            val offers = (promoted + regular).distinctBy { it.id }
+
+            if (offers.isEmpty()) {
+                "No products found for '$normalizedPhrase'."
+            } else {
+                buildString {
+                    appendLine("Found ${offers.size} products for '$normalizedPhrase':")
+                    appendLine()
+                    offers.forEach { offer ->
+                        appendLine("- ${offer.name ?: "Unnamed offer"}")
+                        appendLine("  ID: ${offer.id ?: "unknown"}")
+                        appendLine("  Price: ${offer.sellingMode?.price?.amount ?: "?"} ${offer.sellingMode?.price?.currency ?: ""}".trim())
+                        appendLine("  Seller: ${offer.seller?.login ?: "unknown"}")
+                        offer.images?.firstOrNull()?.url?.let { appendLine("  Image: $it") }
+                        appendLine()
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            "Failed to search products: ${e.message}"
         }
     }
 }
