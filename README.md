@@ -1,3 +1,4 @@
+Based on [allegro-mcp](https://github.com/Bilski311/allegro-mcp) by bilski311 — MIT License
 # Allegro MCP Server
 
 A Model Context Protocol (MCP) server for integrating with your personal [Allegro](https://allegro.pl) account. Access your orders, purchases, watched items, and more through AI assistants like Claude.
