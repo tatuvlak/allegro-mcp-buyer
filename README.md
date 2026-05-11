@@ -1,3 +1,4 @@
+Based on [allegro-mcp](https://github.com/Bilski311/allegro-mcp) by bilski311 — MIT License
 # Allegro MCP Server
 
 A Model Context Protocol (MCP) server for integrating with your personal [Allegro](https://allegro.pl) account. Access your orders, purchases, watched items, and more through AI assistants like Claude.
@@ -5,8 +6,10 @@ A Model Context Protocol (MCP) server for integrating with your personal [Allegr
 ## Features
 
 - **OAuth Device Flow Authentication** - Secure authentication with your Allegro account
+- **Token Persistence & Auto-Refresh** - Keep sessions across restarts and refresh tokens automatically
 - **View Orders** - See your purchase history and order details
 - **Watched Offers** - Check items you're watching
+- **Product Search** - Search Allegro offers by phrase
 - **User Info** - Get your account information
 
 ## Available MCP Tools
@@ -21,6 +24,7 @@ A Model Context Protocol (MCP) server for integrating with your personal [Allegr
 | `allegro_get_order_details` | Get details of a specific order |
 | `allegro_get_watched_offers` | List offers you're watching |
 | `allegro_get_bought_items` | List items you've bought |
+| `allegro_search_products` | Search products by phrase |
 
 ## Prerequisites
 
@@ -41,6 +45,9 @@ A Model Context Protocol (MCP) server for integrating with your personal [Allegr
 ```bash
 export ALLEGRO_CLIENT_ID=your_client_id
 export ALLEGRO_CLIENT_SECRET=your_client_secret
+# or use file-based secrets:
+# export ALLEGRO_CLIENT_ID_FILE=/run/secrets/allegro_client_id
+# export ALLEGRO_CLIENT_SECRET_FILE=/run/secrets/allegro_client_secret
 ```
 
 ### 3. Build and Run
@@ -82,6 +89,10 @@ Or run in stdio mode (coming soon).
 |----------|---------|-------------|
 | `allegro.client-id` | - | Your Allegro Client ID |
 | `allegro.client-secret` | - | Your Allegro Client Secret |
+| `allegro.client-id-file` | - | Path to file containing Client ID |
+| `allegro.client-secret-file` | - | Path to file containing Client Secret |
+| `allegro.auth.token-file` | `~/.allegro-mcp/token.json` | Persisted OAuth token location |
+| `allegro.auth.refresh-before-expiry-seconds` | `60` | Refresh token this many seconds before expiry |
 | `allegro.sandbox` | `false` | Use Allegro sandbox environment |
 | `server.port` | `8080` | Server port |
 

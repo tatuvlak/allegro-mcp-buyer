@@ -20,7 +20,7 @@ repositories {
     maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
-extra["springAiVersion"] = "1.0.0-M5"
+extra["springAiVersion"] = "1.0.0"
 
 dependencies {
     // Spring Boot
@@ -28,7 +28,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
     // Spring AI MCP
-    implementation("org.springframework.ai:spring-ai-mcp-server-spring-boot-starter")
+    implementation("org.springframework.ai:spring-ai-starter-mcp-server-webflux")
 
     // Kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

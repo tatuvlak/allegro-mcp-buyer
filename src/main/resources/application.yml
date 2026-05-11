@@ -23,6 +23,11 @@ allegro:
   sandbox: false
   client-id: ${ALLEGRO_CLIENT_ID:}
   client-secret: ${ALLEGRO_CLIENT_SECRET:}
+  client-id-file: ${ALLEGRO_CLIENT_ID_FILE:}
+  client-secret-file: ${ALLEGRO_CLIENT_SECRET_FILE:}
+  auth:
+    token-file: ${ALLEGRO_TOKEN_FILE:${user.home}/.allegro-mcp/token.json}
+    refresh-before-expiry-seconds: 60
 
 logging:
   level:
